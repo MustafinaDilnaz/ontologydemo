@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Interactive demonstration of an ontology-based framework for personalized educational process planning">
+  <meta name="keywords" content="ontology, education, personalized learning, semantic web, OWL, SPARQL, SWRL">
+  <meta name="author" content="Ontology-Based Educational Framework">
+  <title>Ontology-Based Educational Framework Demo</title>
+  
+  <link rel="stylesheet" href="css/style.css">
+
+  
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  <div class="container">
+
+    <div class="header">
+      <h1>🎓 Ontology-Based Educational Framework</h1>
+      <p class="subtitle">Intelligent, Explainable, Personalized Learning Path Generation</p>
+      <p class="description">
+        This interactive demonstration showcases an ontology-based framework for personalized educational 
+        process planning. The system uses semantic reasoning (OWL, SWRL, SPARQL) to generate individualized 
+        learning paths based on competency prerequisites, learner profiles, and educational standards 
+        (Bloom's Taxonomy, EQF, IEEE LOM).
+      </p>
+    </div>
+    <div class="tab-navigation">
+      <button class="tab-btn active" data-tab="overview">📋 Overview</button>
+      <button class="tab-btn" data-tab="learners">👥 Learners</button>
+      <button class="tab-btn" data-tab="graph">🔗 Competency Graph</button>
+      <button class="tab-btn" data-tab="planner">🎯 Path Planner</button>
+      <button class="tab-btn" data-tab="reasoning">🧠 Reasoning Process</button>
+    </div>
+    <div id="overview-tab" class="tab-content active">
+      <div class="card">
+        <h2>System Overview</h2>
+        <p style="margin-bottom: 20px; line-height: 1.8; color: var(--text-secondary);">
+          This demonstration implements the ontology-based framework described in the research article. 
+          The system integrates four semantic layers to enable automated, explainable personalized learning:
+        </p>
+
+        <!-- Four Layers -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 30px 0;">
+          <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; border-left: 4px solid #3b82f6;">
+            <h3 style="color: #3b82f6; margin: 0 0 10px 0;">1️⃣ Learner Layer</h3>
+            <p style="color: var(--text-secondary); font-size: 0.95rem;">
+              Models individual characteristics: learning styles (VARK), mastered competencies, 
+              goals, and preferences.
+            </p>
+          </div>
+          
+          <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; border-left: 4px solid #8b5cf6;">
+            <h3 style="color: #8b5cf6; margin: 0 0 10px 0;">2️⃣ Competency Layer</h3>
+            <p style="color: var(--text-secondary); font-size: 0.95rem;">
+              Encodes learning outcomes with Bloom's cognitive levels, EQF qualification levels, 
+              and transitive prerequisite relationships.
+            </p>
+          </div>
+          
+          <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; border-left: 4px solid #10b981;">
+            <h3 style="color: #10b981; margin: 0 0 10px 0;">3️⃣ Content Layer</h3>
+            <p style="color: var(--text-secondary); font-size: 0.95rem;">
+              Describes educational resources (courses, modules) using IEEE LOM standards, 
+              mapped to competencies.
+            </p>
+          </div>
+          
+          <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; border-left: 4px solid #f59e0b;">
+            <h3 style="color: #f59e0b; margin: 0 0 10px 0;">4️⃣ Process Layer</h3>
+            <p style="color: var(--text-secondary); font-size: 0.95rem;">
+              Generates personalized learning paths through hybrid reasoning: OWL inference, 
+              SWRL rules, SPARQL queries.
+            </p>
+          </div>
+        </div>
+
+        <h3>Ontology Statistics</h3>
+        <div class="summary-stats" style="margin-top: 20px;">
+          <div class="stat-item">
+            <span class="stat-value" id="total-competencies" style="color: var(--primary-color);">8</span>
+            <span class="stat-label" style="color: var(--text-secondary);">Competencies</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value" id="total-resources" style="color: var(--secondary-color);">8</span>
+            <span class="stat-label" style="color: var(--text-secondary);">Learning Resources</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value" id="total-learners" style="color: var(--success-color);">4</span>
+            <span class="stat-label" style="color: var(--text-secondary);">Simulated Learners</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value" id="avg-prerequisites" style="color: var(--warning-color);">1.5</span>
+            <span class="stat-label" style="color: var(--text-secondary);">Avg Prerequisites</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 30px; padding: 20px; background: #eff6ff; border-radius: 8px; border-left: 4px solid var(--primary-color);">
+          <h3 style="margin: 0 0 10px 0; color: var(--primary-color);">🚀 How to Use This Demo</h3>
+          <ol style="color: var(--text-secondary); line-height: 2;">
+            <li><strong>Explore Learners:</strong> Click the "Learners" tab to see different learner profiles with varying backgrounds and goals.</li>
+            <li><strong>Visualize Competencies:</strong> View the "Competency Graph" to see prerequisite relationships with interactive filtering and legend.</li>
+            <li><strong>Generate Learning Paths:</strong> Use the "Path Planner" to see personalized, step-by-step learning trajectories with explanations.</li>
+            <li><strong>Understand Reasoning:</strong> Check the "Reasoning Process" tab to see how the system makes decisions.</li>
+            <li><strong>Interactive Features:</strong> Filter competencies by level, search by name, click nodes for explanations, and visualize learning paths.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <div id="learners-tab" class="tab-content">
+      <div class="card">
+        <h2>Learner Profiles</h2>
+        <p style="margin-bottom: 20px; color: var(--text-secondary);">
+          Select a learner to see their personalized learning path based on their background, 
+          goals, and learning style.
+        </p>
+        <div id="learner-profile-details" style="margin-top: 20px;">
+          <!-- Enhanced profile will be rendered here by app.js -->
+        </div>
+
+        <div class="learner-grid">
+          <!-- Alice -->
+          <div class="learner-card" data-learner="alice">
+            <h3>Alice Chen</h3>
+            <div class="learner-goal">🎯 Goal: Machine Learning</div>
+            <p class="learner-details">
+              <strong>Background:</strong> Programming novice, recent Business graduate
+            </p>
+            <div class="learner-details">
+              <strong>Mastered Competencies:</strong>
+              <div style="margin-top: 5px;">
+                <span class="badge badge-mastered">Python Basics</span>
+                <span class="badge badge-mastered">Statistics</span>
+              </div>
+            </div>
+            <div class="learner-details" style="margin-top: 10px;">
+              <span class="badge badge-style">Visual Learner</span>
+              <span class="badge badge-time">15 hrs/week</span>
+            </div>
+            <button class="btn btn-primary generate-path-btn" data-learner="alice" 
+                    style="margin-top: 15px; width: 100%;">
+              Generate Learning Path →
+            </button>
+          </div>
+
+          <!-- Bob -->
+          <div class="learner-card" data-learner="bob">
+            <h3>Bob Martinez</h3>
+            <div class="learner-goal">🎯 Goal: Data Analysis</div>
+            <p class="learner-details">
+              <strong>Background:</strong> Mathematics background, career changer
+            </p>
+            <div class="learner-details">
+              <strong>Mastered Competencies:</strong>
+              <div style="margin-top: 5px;">
+                <span class="badge badge-mastered">Statistics</span>
+              </div>
+            </div>
+            <div class="learner-details" style="margin-top: 10px;">
+              <span class="badge badge-style">Reading/Writing Learner</span>
+              <span class="badge badge-time">10 hrs/week</span>
+            </div>
+            <button class="btn btn-primary generate-path-btn" data-learner="bob" 
+                    style="margin-top: 15px; width: 100%;">
+              Generate Learning Path →
+            </button>
+          </div>
+
+          <!-- Carol -->
+          <div class="learner-card" data-learner="carol">
+            <h3>Carol Williams</h3>
+            <div class="learner-goal">🎯 Goal: Deep Learning</div>
+            <p class="learner-details">
+              <strong>Background:</strong> Software developer seeking ML specialization
+            </p>
+            <div class="learner-details">
+              <strong>Mastered Competencies:</strong>
+              <div style="margin-top: 5px;">
+                <span class="badge badge-mastered">Python</span>
+                <span class="badge badge-mastered">Statistics</span>
+                <span class="badge badge-mastered">Data Cleaning</span>
+                <span class="badge badge-mastered">ML Basics</span>
+              </div>
+            </div>
+            <div class="learner-details" style="margin-top: 10px;">
+              <span class="badge badge-style">Kinesthetic Learner</span>
+              <span class="badge badge-time">20 hrs/week</span>
+            </div>
+            <button class="btn btn-primary generate-path-btn" data-learner="carol" 
+                    style="margin-top: 15px; width: 100%;">
+              Generate Learning Path →
+            </button>
+          </div>
+
+          <!-- David -->
+          <div class="learner-card" data-learner="david">
+            <h3>David Kumar</h3>
+            <div class="learner-goal">🎯 Goal: Data Analysis</div>
+            <p class="learner-details">
+              <strong>Background:</strong> Complete beginner, switching from healthcare
+            </p>
+            <div class="learner-details">
+              <strong>Mastered Competencies:</strong>
+              <div style="margin-top: 5px;">
+                <span class="badge" style="background: #fee2e2; color: #991b1b;">None yet</span>
+              </div>
+            </div>
+            <div class="learner-details" style="margin-top: 10px;">
+              <span class="badge badge-style">Visual Learner</span>
+              <span class="badge badge-time">12 hrs/week</span>
+            </div>
+            <button class="btn btn-primary generate-path-btn" data-learner="david" 
+                    style="margin-top: 15px; width: 100%;">
+              Generate Learning Path →
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================
+         TAB 3: COMPETENCY GRAPH (ENHANCED)
+         ============================================ -->
+    <div id="graph-tab" class="tab-content">
+      <div class="card">
+        <h2>Interactive Competency Prerequisite Graph</h2>
+        <p style="margin-bottom: 20px; color: var(--text-secondary);">
+          This interactive graph visualizes the competency ontology with prerequisite relationships. 
+          Use the filter panel to narrow down competencies, and the legend panel for interactive actions.
+        </p>
+
+        <div class="graph-container-wrapper">
+          <div id="filter-panel" class="panel-container">
+            <!-- FilterPanel component will render here -->
+          </div>
+
+          <!-- Main Graph Area -->
+          <div id="competency-graph" class="main-graph-area">
+            <!-- D3 SVG will be rendered here by CompetencyGraph -->
+          </div>
+
+          <!-- Legend Panel (Right Sidebar) -->
+          <div id="legend-panel" class="panel-container">
+            <!-- LegendPanel component will render here -->
+          </div>
+        </div>
+
+        <div style="margin-top: 20px; padding: 20px; background: #fef3c7; border-radius: 8px; border-left: 4px solid #f59e0b;">
+          <h4 style="margin: 0 0 10px 0; color: #92400e;">💡 Interactive Features:</h4>
+          <ul style="color: #92400e; line-height: 1.8; margin: 10px 0 0 20px;">
+            <li><strong>Click nodes</strong> to see detailed explanations and recommendations</li>
+            <li><strong>Use filters</strong> to show/hide competencies by Bloom/EQF levels</li>
+            <li><strong>Search</strong> for specific competencies by name (Ctrl+K)</li>
+            <li><strong>Generate paths</strong> by clicking "Generate Path" in the legend</li>
+            <li><strong>Diagnose gaps</strong> to visualize missing prerequisites</li>
+            <li><strong>Drag nodes</strong> to rearrange the graph layout</li>
+            <li><strong>Zoom/Pan</strong> using mouse wheel and drag on empty space</li>
+          </ul>
+        </div>
+
+        <!-- Legend for users without JavaScript panels -->
+        <noscript>
+          <div style="margin-top: 20px; padding: 20px; background: #fee2e2; border-radius: 8px; color: #991b1b;">
+            <strong>⚠️ JavaScript Required:</strong> This interactive demo requires JavaScript to be enabled 
+            for full functionality including filtering, legends, and graph interactions.
+          </div>
+        </noscript>
+      </div>
+    </div>
+
+    <div id="planner-tab" class="tab-content">
+      <div class="card">
+        <h2>Personalized Learning Path Generator</h2>
+        <p style="margin-bottom: 20px; color: var(--text-secondary);">
+          This demonstrates automated path generation using SPARQL queries and SWRL rules. 
+          The system identifies competency gaps, generates an optimal learning sequence, 
+          and provides natural language explanations.
+        </p>
+
+        <div style="padding: 20px; background: var(--bg-light); border-radius: 8px; margin-bottom: 20px;">
+          <h3 style="margin: 0 0 10px 0;">Selected Learner</h3>
+          <div style="font-size: 1.2rem;">
+            <strong id="selected-learner-name">Select a learner to begin</strong>
+          </div>
+          <div style="color: var(--text-secondary); margin-top: 5px;">
+            Goal: <strong id="selected-learner-goal">-</strong>
+          </div>
+          
+          <!-- Enhanced profile details container -->
+          <div id="learner-profile-details-planner" style="margin-top: 15px;">
+            <!-- Will be populated by app.js -->
+          </div>
+        </div>
+
+        <h3>🔍 Competency Gap Analysis</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 15px;">
+          Using SPARQL Query 2.1, the system identifies missing prerequisites categorized by priority.
+        </p>
+        <div id="gap-analysis">
+          <div class="empty-state">
+            <div class="empty-state-icon">👈</div>
+            <h3>Select a Learner</h3>
+            <p>Choose a learner from the "Learners" tab to see their competency gap analysis.</p>
+          </div>
+        </div>
+
+        <h3 style="margin-top: 40px;">🛤️ Generated Learning Path</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 15px;">
+          The system uses topological sorting over the competency graph to sequence learning activities 
+          while respecting prerequisites. Resources are matched to learning styles using SWRL rules.
+        </p>
+        <div id="learning-path">
+          <div class="empty-state">
+            <div class="empty-state-icon">👈</div>
+            <h3>Select a Learner</h3>
+            <p>Choose a learner from the "Learners" tab to generate their personalized learning path.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="reasoning-tab" class="tab-content">
+      <div class="card">
+        <h2>🧠 Reasoning Process Explanation</h2>
+        <p style="margin-bottom: 30px; color: var(--text-secondary); line-height: 1.8;">
+          This demonstration implements the hybrid reasoning approach described in the article, 
+          combining three complementary methods. Here's how the system generates personalized learning paths:
+        </p>
+
+        <div class="reasoning-chain">
+          <h3 style="color: var(--primary-color); margin-bottom: 20px;">Step-by-Step Reasoning Pipeline</h3>
+
+          <div class="reasoning-step">
+            <div class="step-icon">1</div>
+            <div class="step-content">
+              <div class="step-title">🔍 Query Learner Profile</div>
+              <div class="step-description">
+                System retrieves learner's characteristics: mastered competencies, learning style 
+                (VARK model), target goal, and time availability. This data is stored as RDF triples 
+                in the ontology.
+              </div>
+              <div class="step-example">
+                <strong>Example Query:</strong><br>
+                <code>SELECT ?learner ?mastered ?style ?goal WHERE { ... }</code>
+              </div>
+            </div>
+          </div>
+
+          <div class="arrow-down">⬇</div>
+
+          <div class="reasoning-step">
+            <div class="step-icon">2</div>
+            <div class="step-content">
+              <div class="step-title">🔗 OWL Reasoning: Transitive Closure</div>
+              <div class="step-description">
+                The OWL 2 DL reasoner computes transitive prerequisite relationships. 
+                If A requires B, and B requires C, then A transitively requires C. This inference 
+                happens automatically through the requiresCompetency transitive property.
+              </div>
+              <div class="step-example">
+                <strong>OWL Axiom:</strong><br>
+                <code>requiresCompetency rdf:type owl:TransitiveProperty</code>
+              </div>
+            </div>
+          </div>
+
+          <div class="arrow-down">⬇</div>
+
+          <div class="reasoning-step">
+            <div class="step-icon">3</div>
+            <div class="step-content">
+              <div class="step-title">📊 Gap Detection (SPARQL Query 2.1)</div>
+              <div class="step-description">
+                System executes SPARQL query to find competencies required for the goal that the 
+                learner hasn't mastered. Gaps are categorized as high priority (direct prerequisites) 
+                or medium priority (indirect prerequisites).
+              </div>
+              <div class="step-example">
+                <strong>Detection Logic:</strong><br>
+                Gaps = (Required Competencies) ∩ ¬(Mastered Competencies)
+              </div>
+            </div>
+          </div>
+
+          <div class="arrow-down">⬇</div>
+
+          <div class="reasoning-step">
+            <div class="step-icon">4</div>
+            <div class="step-content">
+              <div class="step-title">🔀 Topological Sorting</div>
+              <div class="step-description">
+                To create a valid learning sequence, the system performs topological sort on the 
+                prerequisite graph. This ensures that prerequisites are always scheduled before 
+                dependent competencies, preventing circular dependencies.
+              </div>
+              <div class="step-example">
+                <strong>Algorithm:</strong> Kahn's Algorithm with priority weighting
+              </div>
+            </div>
+          </div>
+
+          <div class="arrow-down">⬇</div>
+
+          <div class="reasoning-step">
+            <div class="step-icon">5</div>
+            <div class="step-content">
+              <div class="step-title">📚 Resource Matching (SWRL Rules)</div>
+              <div class="step-description">
+                For each competency in the sorted path, SWRL rules select appropriate learning 
+                resources. Rules consider: (1) which resources teach the competency, (2) learner's 
+                learning style preference, (3) difficulty level matching learner's performance.
+              </div>
+              <div class="step-example">
+                <strong>SWRL Rule Example:</strong><br>
+                <code>Learner(?l) ∧ hasStyle(?l, Visual) ∧ Resource(?r) ∧ suitableFor(?r, Visual) → recommendedFor(?r, ?l)</code>
+              </div>
+            </div>
+          </div>
+
+          <div class="arrow-down">⬇</div>
+
+          <div class="reasoning-step">
+            <div class="step-icon">6</div>
+            <div class="step-content">
+              <div class="step-title">💬 Explanation Generation (SPARQL Query 3.1)</div>
+              <div class="step-description">
+                The system generates natural language explanations by tracing prerequisite chains 
+                through SPARQL queries. For each recommended resource, it explains WHY it's needed 
+                by identifying the path from current competencies to the goal.
+              </div>
+              <div class="step-example">
+                <strong>Output:</strong> Natural language reasoning traces with clickable node explanations
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 30px; padding: 25px; background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%); border-radius: 12px; border: 2px solid var(--primary-color);">
+          <h3 style="color: var(--primary-color); margin: 0 0 15px 0;">🎯 Key Advantages of This Approach</h3>
+          <ul style="color: var(--text-secondary); line-height: 2; margin-left: 20px;">
+            <li><strong>Explainability:</strong> Every recommendation includes a traceable justification based on prerequisite logic.</li>
+            <li><strong>Consistency:</strong> OWL reasoning guarantees logically valid prerequisite structures (no cycles, complete coverage).</li>
+            <li><strong>Adaptability:</strong> SWRL rules enable context-sensitive personalization (learning styles, difficulty matching).</li>
+            <li><strong>Standards Alignment:</strong> Bloom's Taxonomy and EQF levels ensure pedagogical validity.</li>
+            <li><strong>Interoperability:</strong> RDF/OWL format allows integration with other educational systems and data sources.</li>
+            <li><strong>Interactive Exploration:</strong> Visual graph interface with filtering and real-time path generation.</li>
+          </ul>
+        </div>
+
+        <!-- Additional Implementation Details -->
+        <div style="margin-top: 30px; padding: 20px; background: #f0f9ff; border-radius: 8px; border-left: 4px solid #0284c7;">
+          <h4 style="color: #0284c7; margin: 0 0 10px 0;">🔧 Implementation Highlights</h4>
+          <div style="color: var(--text-secondary); line-height: 1.8;">
+            <p><strong>Frontend:</strong> D3.js force-directed graph with custom physics, responsive panels, real-time filtering</p>
+            <p><strong>Reasoning Engine:</strong> JavaScript implementation of OWL-DL subset with transitive closure computation</p>
+            <p><strong>Data Format:</strong> JSON-LD compatible structure that can be exported to RDF/OWL</p>
+            <p><strong>Use Cases Supported:</strong></p>
+            <ul style="margin-left: 20px;">
+              <li><strong>UC-1:</strong> Learning Path Generation with topological sorting</li>
+              <li><strong>UC-2:</strong> Gap Diagnosis with priority categorization</li>
+              <li><strong>UC-3:</strong> Explainable Recommendations with natural language traces</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align: center; padding: 30px; color: white; margin-top: 30px;">
+      <p style="margin: 0; opacity: 0.9;">
+        <strong>Research Article Implementation:</strong> Ontology-Based Framework for Personalized Educational Process Planning
+      </p>
+      <p style="margin: 10px 0 0 0; opacity: 0.7; font-size: 0.9rem;">
+        Demo created to showcase semantic reasoning, explainable AI, and competency-based personalization in education
+      </p>
+      <p style="margin: 10px 0 0 0; opacity: 0.6; font-size: 0.85rem;">
+        Interactive features: Graph filtering • Learning path generation • Gap analysis • Explainable recommendations
+      </p>
+    </div>
+  </div>
+
+<script src="js/ontology-data.js"></script>
+<script src="js/reasoner.js"></script> 
+<script src="js/graph.js"></script>
+<script src="js/filter-panel.js"></script>
+<script src="js/legend-panel.js"></script>
+<script src="js/app.js"></script>     
+</body>
+</html>
