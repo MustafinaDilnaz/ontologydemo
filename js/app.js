@@ -7,7 +7,11 @@ class OntologyDemo {
     this.legendPanel = null;
     this.selectedLearner = null;
     this.currentTab = 'overview';
-    
+
+    this.learnerService = new LearnerService(ontologyData);
+    this.competencyService = new CompetencyService(ontologyData);
+    this.resourceService = new ResourceService(ontologyData);
+
     this.init();
   }
 
@@ -16,7 +20,8 @@ class OntologyDemo {
     
     try {
       // Initialize reasoner
-      this.reasoner = new OntologyReasoner(ontologyData);
+      this.store = new OntologyStore(ontologyData);
+      this.reasoner = new PathGenerator(this.store);
       console.log('✓ Reasoner initialized');
       
       // Setup event listeners
@@ -206,10 +211,12 @@ class OntologyDemo {
     }
 
     try {
-      console.log('Creating LegendPanel');
       this.legendPanel = new LegendPanel('legend-panel', this.graph, ontologyData);
       this.legendPanel.initialize();
-      console.log('✓ Legend panel initialized');
+
+      if (this.graph) {
+        this.legendPanel.updateStatistics();
+      }
     } catch (error) {
       console.error('❌ Legend panel initialization error:', error);
     }
@@ -242,8 +249,8 @@ class OntologyDemo {
     if (this.currentTab === 'planner') {
       this.renderPathPlanner(learnerId);
     }
-
-    this.showNotification(`Selected learner: ${ontologyData.learners[learnerId].name}`, 'success');
+    const learner = this.learnerService.getById(learnerId);
+    this.showNotification(`Selected learner: ${learner?.name || learnerId}`, 'success');
   }
 
   generateAndShowPath(learnerId) {
@@ -561,12 +568,12 @@ class OntologyDemo {
   }
 
   calculateStats() {
-    const competencies = Object.values(ontologyData.competencies);
-    const resources = Object.values(ontologyData.learningResources);
-    const learners = Object.values(ontologyData.learners);
+    const competencies = this.competencyService.getAll();
+    const resources = this.resourceService.getAll();
+    const learners = this.learnerService.getAll();
 
     const totalPrereqs = competencies.reduce((sum, c) => sum + (c.prerequisites?.length || 0), 0);
-    const avgPrerequisites = competencies.length > 0 
+    const avgPrerequisites = competencies.length > 0
       ? (totalPrereqs / competencies.length).toFixed(1)
       : '0';
 
@@ -580,7 +587,7 @@ class OntologyDemo {
 
 
   renderPathPlanner(learnerId) {
-    const learner = ontologyData.learners[learnerId];
+    const learner = this.learnerService.getById(learnerId);
     if (!learner) {
       console.warn(`Learner ${learnerId} not found`);
       return;
@@ -592,8 +599,8 @@ class OntologyDemo {
     this.renderLearnerProfile(learnerId);
 
     // Get target competency
-    const targetCompetency = learner.targetCompetency || learner.goals?.targetCompetencies?.[0];
-    
+    const targetCompetency = this.learnerService.getTargetCompetency(learnerId);
+
     if (!targetCompetency) {
       console.warn('No target competency found for learner');
       return;
@@ -609,7 +616,7 @@ class OntologyDemo {
   }
 
   renderLearnerProfile(learnerId) {
-    const learner = ontologyData.learners[learnerId];
+    const learner = this.learnerService.getById(learnerId);
     if (!learner) return;
 
     // Update basic info
@@ -621,13 +628,11 @@ class OntologyDemo {
     // Enhanced profile details
     const profileContainer = document.getElementById('learner-profile-details');
     if (profileContainer) {
-      const masteredCount = learner.competencyStatus?.masteredCompetencies?.length || 
-                           learner.masteredCompetencies?.length || 0;
-      const allPrereqs = this.reasoner.getTransitivePrerequisites(
-        learner.targetCompetency || learner.goals?.targetCompetencies?.[0]
-      );
-      const gapCount = allPrereqs.filter(id => 
-        !(learner.competencyStatus?.masteredCompetencies || learner.masteredCompetencies || []).includes(id)
+      const masteredCount = this.learnerService.getMasteredCompetencies(learnerId).length;
+      const targetCompetency = this.learnerService.getTargetCompetency(learnerId);
+      const allPrereqs = this.reasoner.getTransitivePrerequisites(targetCompetency);
+      const gapCount = allPrereqs.filter(id =>
+        !this.learnerService.getMasteredCompetencies(learnerId).includes(id)
       ).length;
 
       profileContainer.innerHTML = `

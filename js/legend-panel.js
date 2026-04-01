@@ -1,9 +1,3 @@
-// =============================================================================
-// LEGEND PANEL - Interactive Legend with Statistics
-// =============================================================================
-// Provides visual legend for node colors, statuses, and real-time graph statistics
-// =============================================================================
-
 class LegendPanel {
   constructor(containerId, graph, ontologyData) {
     this.containerId = containerId;
@@ -19,10 +13,6 @@ class LegendPanel {
     this.updateInterval = null;
   }
 
-  // ===========================================================================
-  // INITIALIZATION
-  // ===========================================================================
-
   initialize() {
     this.container = document.getElementById(this.containerId);
     if (!this.container) {
@@ -37,10 +27,6 @@ class LegendPanel {
     document.addEventListener('filters-changed', () => this.updateStatistics());
     document.addEventListener('learner-changed', () => this.updateStatistics());
   }
-
-  // ===========================================================================
-  // RENDERING
-  // ===========================================================================
 
   render() {
     this.container.innerHTML = this.getHTML();
@@ -514,10 +500,22 @@ class LegendPanel {
   // ===========================================================================
 
   calculateStatistics() {
+    if (!this.graph) {
+      return {
+        totalNodes: 0,
+        totalLinks: 0,
+        masteredNodes: 0,
+        targetNodes: 0,
+        avgPrerequisites: 0,
+        maxPrerequisites: 0
+      };
+    }
+
+    const selectedLearner = this.graph.selectedLearner || null;
     const nodes = this.graph.nodes || [];
     const links = this.graph.links || [];
-    const learner = this.graph.state.selectedLearner 
-      ? this.ontologyData.learners[this.graph.state.selectedLearner]
+    const learner = selectedLearner
+      ? this.ontologyData.learners[selectedLearner]
       : null;
 
     // Basic counts
@@ -567,7 +565,7 @@ class LegendPanel {
       totalHours,
       eqfDistribution,
       bloomDistribution,
-      selectedLearner: learner !== null
+      selectedLearner: selectedLearner
     };
   }
 
@@ -594,10 +592,6 @@ class LegendPanel {
       clearInterval(this.updateInterval);
     }
   }
-
-  // ===========================================================================
-  // PUBLIC API
-  // ===========================================================================
 
   getStatistics() {
     return this.calculateStatistics();
