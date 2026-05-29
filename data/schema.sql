@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS learners (
                          CHECK (learning_style IN ('visual','auditory','reading','kinesthetic')),
   available_hours_week INTEGER DEFAULT 10,
   performance_score    REAL    DEFAULT 0.5,
+  domain               TEXT    DEFAULT 'data_science',
   created_at           TEXT    DEFAULT (datetime('now'))
 );
 

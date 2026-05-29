@@ -94,6 +94,37 @@
             <span class="stat-value" id="avg-prerequisites" style="color: var(--warning-color);">1.5</span>
             <span class="stat-label" style="color: var(--text-secondary);">Avg Prerequisites</span>
           </div>
+          <div class="stat-item">
+            <span class="stat-value" id="active-paths" style="color: var(--primary-color);">0</span>
+            <span class="stat-label" style="color: var(--text-secondary);">Active Paths</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value" id="total-masteries" style="color: var(--success-color);">0</span>
+            <span class="stat-label" style="color: var(--text-secondary);">Masteries Recorded</span>
+          </div>
+        </div>
+
+        <!-- Cohort analytics (populated by syncFromDatabase) -->
+        <div id="cohort-analytics" style="margin-top:28px; display:none;">
+          <h3 style="margin:0 0 16px 0; color:var(--text-primary); font-size:1.1rem;">📊 Cohort Analytics</h3>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:20px;">
+
+            <div style="background:var(--bg-light); border-radius:10px; padding:18px; border:1px solid var(--border-color);">
+              <h4 style="margin:0 0 12px 0; color:var(--danger-color); font-size:0.95rem;">🚧 Top Missing Competencies</h4>
+              <ol id="gap-frequency-list" style="margin:0; padding-left:18px; color:var(--text-secondary); font-size:0.88rem; line-height:2;"></ol>
+            </div>
+
+            <div style="background:var(--bg-light); border-radius:10px; padding:18px; border:1px solid var(--border-color);">
+              <h4 style="margin:0 0 12px 0; color:var(--secondary-color); font-size:0.95rem;">📚 Top Used Resources</h4>
+              <ol id="top-resources-list" style="margin:0; padding-left:18px; color:var(--text-secondary); font-size:0.88rem; line-height:2;"></ol>
+            </div>
+
+            <div style="background:var(--bg-light); border-radius:10px; padding:18px; border:1px solid var(--border-color);">
+              <h4 style="margin:0 0 12px 0; color:var(--success-color); font-size:0.95rem;">🎓 Readiness Distribution</h4>
+              <div id="readiness-distribution" style="font-size:0.88rem;"></div>
+            </div>
+
+          </div>
         </div>
 
         <div style="margin-top: 30px; padding: 20px; background: #eff6ff; border-radius: 8px; border-left: 4px solid var(--primary-color);">
@@ -112,110 +143,24 @@
     <div id="learners-tab" class="tab-content">
       <div class="card">
         <h2>Learner Profiles</h2>
-        <p style="margin-bottom: 20px; color: var(--text-secondary);">
-          Select a learner to see their personalized learning path based on their background, 
+        <p style="margin-bottom: 16px; color: var(--text-secondary);">
+          Select a learner to see their personalized learning path based on their background,
           goals, and learning style.
         </p>
+        <div style="position:relative; margin-bottom:20px; max-width:400px;">
+          <input id="learner-search" type="text" placeholder="🔍 Search learners by name…"
+            style="width:100%; padding:9px 14px; border-radius:8px; border:1px solid var(--border-color);
+                   font-size:0.95rem; outline:none; box-shadow:var(--shadow);"
+            autocomplete="off">
+          <span id="learner-search-count" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);
+                font-size:0.8rem;color:var(--text-secondary);pointer-events:none;"></span>
+        </div>
         <div id="learner-profile-details" style="margin-top: 20px;">
           <!-- Enhanced profile will be rendered here by app.js -->
         </div>
 
-        <div class="learner-grid">
-          <!-- Alice -->
-          <div class="learner-card" data-learner="alice">
-            <h3>Alice Chen</h3>
-            <div class="learner-goal">🎯 Goal: Machine Learning</div>
-            <p class="learner-details">
-              <strong>Background:</strong> Programming novice, recent Business graduate
-            </p>
-            <div class="learner-details">
-              <strong>Mastered Competencies:</strong>
-              <div style="margin-top: 5px;">
-                <span class="badge badge-mastered">Python Basics</span>
-                <span class="badge badge-mastered">Statistics</span>
-              </div>
-            </div>
-            <div class="learner-details" style="margin-top: 10px;">
-              <span class="badge badge-style">Visual Learner</span>
-              <span class="badge badge-time">15 hrs/week</span>
-            </div>
-            <button class="btn btn-primary generate-path-btn" data-learner="alice" 
-                    style="margin-top: 15px; width: 100%;">
-              Generate Learning Path →
-            </button>
-          </div>
-
-          <!-- Bob -->
-          <div class="learner-card" data-learner="bob">
-            <h3>Bob Martinez</h3>
-            <div class="learner-goal">🎯 Goal: Data Analysis</div>
-            <p class="learner-details">
-              <strong>Background:</strong> Mathematics background, career changer
-            </p>
-            <div class="learner-details">
-              <strong>Mastered Competencies:</strong>
-              <div style="margin-top: 5px;">
-                <span class="badge badge-mastered">Statistics</span>
-              </div>
-            </div>
-            <div class="learner-details" style="margin-top: 10px;">
-              <span class="badge badge-style">Reading/Writing Learner</span>
-              <span class="badge badge-time">10 hrs/week</span>
-            </div>
-            <button class="btn btn-primary generate-path-btn" data-learner="bob" 
-                    style="margin-top: 15px; width: 100%;">
-              Generate Learning Path →
-            </button>
-          </div>
-
-          <!-- Carol -->
-          <div class="learner-card" data-learner="carol">
-            <h3>Carol Williams</h3>
-            <div class="learner-goal">🎯 Goal: Deep Learning</div>
-            <p class="learner-details">
-              <strong>Background:</strong> Software developer seeking ML specialization
-            </p>
-            <div class="learner-details">
-              <strong>Mastered Competencies:</strong>
-              <div style="margin-top: 5px;">
-                <span class="badge badge-mastered">Python</span>
-                <span class="badge badge-mastered">Statistics</span>
-                <span class="badge badge-mastered">Data Cleaning</span>
-                <span class="badge badge-mastered">ML Basics</span>
-              </div>
-            </div>
-            <div class="learner-details" style="margin-top: 10px;">
-              <span class="badge badge-style">Kinesthetic Learner</span>
-              <span class="badge badge-time">20 hrs/week</span>
-            </div>
-            <button class="btn btn-primary generate-path-btn" data-learner="carol" 
-                    style="margin-top: 15px; width: 100%;">
-              Generate Learning Path →
-            </button>
-          </div>
-
-          <!-- David -->
-          <div class="learner-card" data-learner="david">
-            <h3>David Kumar</h3>
-            <div class="learner-goal">🎯 Goal: Data Analysis</div>
-            <p class="learner-details">
-              <strong>Background:</strong> Complete beginner, switching from healthcare
-            </p>
-            <div class="learner-details">
-              <strong>Mastered Competencies:</strong>
-              <div style="margin-top: 5px;">
-                <span class="badge" style="background: #fee2e2; color: #991b1b;">None yet</span>
-              </div>
-            </div>
-            <div class="learner-details" style="margin-top: 10px;">
-              <span class="badge badge-style">Visual Learner</span>
-              <span class="badge badge-time">12 hrs/week</span>
-            </div>
-            <button class="btn btn-primary generate-path-btn" data-learner="david" 
-                    style="margin-top: 15px; width: 100%;">
-              Generate Learning Path →
-            </button>
-          </div>
+        <div id="learner-grid" class="learner-grid">
+          <!-- Карточки рендерятся динамически из базы данных (app.js → renderLearnerGrid) -->
         </div>
       </div>
     </div>
@@ -324,10 +269,34 @@
     <div id="reasoning-tab" class="tab-content">
       <div class="card">
         <h2>🧠 Reasoning Process Explanation</h2>
-        <p style="margin-bottom: 30px; color: var(--text-secondary); line-height: 1.8;">
-          This demonstration implements the hybrid reasoning approach described in the article, 
-          combining three complementary methods. Here's how the system generates personalized learning paths:
+        <p style="margin-bottom: 20px; color: var(--text-secondary); line-height: 1.8;">
+          Interactive prerequisite tree for the selected learner. Root = target goal. Leaves = knowledge gaps.
+          Hover over any node to see the reasoning explanation.
         </p>
+
+        <!-- Interactive D3 reasoning tree -->
+        <div id="reasoning-tree-wrap" style="border:1px solid var(--border-color); border-radius:10px; background:var(--bg-light); padding:16px; margin-bottom:28px;">
+          <div id="reasoning-tree-controls" style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:12px;">
+            <label style="font-size:0.85rem; color:var(--text-secondary); font-weight:600;">Learner:</label>
+            <select id="rt-learner-select" style="padding:6px 10px; border-radius:6px; border:1px solid var(--border-color); font-size:0.9rem;"></select>
+            <label style="font-size:0.85rem; color:var(--text-secondary); font-weight:600;">Goal:</label>
+            <select id="rt-goal-select" style="padding:6px 10px; border-radius:6px; border:1px solid var(--border-color); font-size:0.9rem;"></select>
+            <div style="margin-left:auto; display:flex; gap:10px; flex-wrap:wrap; font-size:0.8rem; color:var(--text-secondary);">
+              <span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#ef4444;vertical-align:middle;margin-right:4px;"></span>Critical</span>
+              <span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#f59e0b;vertical-align:middle;margin-right:4px;"></span>High</span>
+              <span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#3b82f6;vertical-align:middle;margin-right:4px;"></span>Medium</span>
+              <span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#10b981;vertical-align:middle;margin-right:4px;"></span>Mastered</span>
+              <span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#7c3aed;vertical-align:middle;margin-right:4px;"></span>Goal</span>
+            </div>
+          </div>
+          <div id="reasoning-tree-container" style="width:100%; height:440px; overflow:hidden; position:relative;">
+            <div id="reasoning-tree-placeholder" style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-secondary);">
+              Select a learner above to visualise the reasoning chain.
+            </div>
+          </div>
+          <!-- Hover tooltip -->
+          <div id="rt-tooltip" style="position:fixed;display:none;background:#1e293b;color:#f1f5f9;padding:10px 14px;border-radius:8px;font-size:0.82rem;max-width:280px;pointer-events:none;z-index:9999;line-height:1.5;box-shadow:0 4px 20px rgba(0,0,0,0.3);"></div>
+        </div>
 
         <div class="reasoning-chain">
           <h3 style="color: var(--primary-color); margin-bottom: 20px;">Step-by-Step Reasoning Pipeline</h3>
@@ -481,18 +450,20 @@
     </div>
   </div>
 
+<script src="js/utils.js"></script>
 <script src="js/ontology-data.js"></script>
-<script src="js/reasoner.js"></script> 
-<script src="js/graph.js"></script>
-<script src="js/filter-panel.js"></script>
-<script src="js/legend-panel.js"></script>
-<script src="js/app.js"></script>     
 
 <script src="js/services/learnerService.js"></script>
 <script src="js/services/competencyService.js"></script>
 <script src="js/services/resourceService.js"></script>
 
+<script src="js/CompetencyGraph.js"></script>
+<script src="js/filter-panel.js"></script>
+<script src="js/legend-panel.js"></script>
 <script src="js/reasoning/ontologyStore.js"></script>
+<script src="js/reasoning/swrlRules.js"></script>
 <script src="js/reasoning/pathGenerator.js"></script>
+<script src="js/app.js"></script>
+
 </body>
 </html>

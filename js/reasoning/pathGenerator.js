@@ -23,29 +23,15 @@ class PathGenerator {
   }
 
   computeTransitiveClosure(goalId) {
-    const visited = new Set();
-    const queue = [goalId];
-
-    while (queue.length > 0) {
-      const current = queue.shift();
-      if (visited.has(current)) continue;
-
-      visited.add(current);
-
-      const directPrereqs = this.store.getDirectPrerequisites(current);
-      for (const prereqId of directPrereqs) {
-        if (!visited.has(prereqId)) {
-          queue.push(prereqId);
-        }
-      }
-    }
-
-    visited.delete(goalId);
-    return visited;
+    return this.store.getTransitiveClosure(goalId);
   }
 
   getTransitivePrerequisites(competencyId) {
     return Array.from(this.computeTransitiveClosure(competencyId));
+  }
+
+  getDependents(compId) {
+    return Array.from(this.store.getDependents(Number(compId)));
   }
 
   topologicalSort(gapsSet) {
@@ -271,19 +257,20 @@ class PathGenerator {
     const gapAnalysis = this.classifyGapPriority([...gaps], targetCompetencyId, mastered);
     const criticalSet = new Set(gapAnalysis.critical.map((g) => g.competencyId));
 
-    const pathSteps = sorted.map((compId, index) => {
-      const comp = this.store.getCompetencyById(compId);
-      const recommendedResource = this.selectResourceForCompetency(compId, learner);
-
-      return {
-        step: index + 1,
-        competency: comp,
-        resource: recommendedResource,
-        estimatedHours: comp?.estimatedHours || 10,
-        isTarget: false,
-        priority: criticalSet.has(compId) ? "critical" : "high"
-      };
-    });
+    const pathSteps = sorted
+      .map((compId, index) => {
+        const comp = this.store.getCompetencyById(compId);
+        if (!comp) return null; // orphaned competency id — skip
+        return {
+          step: index + 1,
+          competency: comp,
+          resource: this.selectResourceForCompetency(compId, learner), // may be null
+          estimatedHours: comp.estimatedHours || 10,
+          isTarget: false,
+          priority: criticalSet.has(compId) ? "critical" : "high"
+        };
+      })
+      .filter(Boolean);
 
     pathSteps.push({
       step: pathSteps.length + 1,

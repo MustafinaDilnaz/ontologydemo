@@ -440,7 +440,7 @@ body {
 }
 
 .competency-gap.medium-priority {
-  border-left-color: var(--warning-color);
+  border-left-color: #3b82f6;
 }
 
 .gap-title {
@@ -1773,4 +1773,74 @@ body {
 .filter-content::-webkit-scrollbar-thumb:hover,
 .legend-content::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+/* ── Priority badge colours ────────────────────────────────────── */
+.priority-critical {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* ── ⓘ tooltip icon ────────────────────────────────────────────── */
+.info-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin-left: 6px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  color: #475569;
+  font-size: 11px;
+  font-style: normal;
+  cursor: help;
+  position: relative;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.info-icon::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%);
+  white-space: normal;
+  width: 240px;
+  background: #1e293b;
+  color: #f1f5f9;
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 8px 12px;
+  border-radius: 7px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 999;
+}
+
+.info-icon:hover::after {
+  opacity: 1;
+}
+
+/* ── Mark as Mastered button ───────────────────────────────────── */
+.mastery-toggle-btn {
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.mastery-toggle-btn:hover:not(:disabled) {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+
+.mastery-toggle-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.stat-value,
+.stat-color {
+  color: white;
 }

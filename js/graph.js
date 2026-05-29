@@ -10,6 +10,7 @@ class CompetencyGraph {
     this.selectedLearner = null;
     this.nodes = [];
     this.links = [];
+    this.highlightedPath = [];
   }
 
   initialize() {
@@ -236,14 +237,18 @@ class CompetencyGraph {
         description: comp.description,
         type: comp.type,
         estimatedHours: comp.estimatedHours,
-        isMastered: learner ? learner.masteredCompetencies.includes(comp.id) : false,
-        isTarget: learner ? learner.targetCompetency === comp.id : false,
+        isMastered: learner
+          ? (learner.masteredIds || learner.masteredCompetencies || []).map(Number).includes(Number(comp.id))
+          : false,
+        isTarget: learner
+          ? Number(learner.targetCompetency) === Number(comp.id)
+          : false,
         prerequisites: comp.prerequisites,
         // NEW ENHANCED PROPERTIES
         difficultyLevel: comp.difficultyLevel || null,
         complexityScore: comp.complexityScore || null,
         competencyType: comp.competencyType || comp.type,
-        belongsToDomain: comp.belongsToDomain || null,
+        domain: comp.domain || comp.belongsToDomain || null,
         assessmentCriteria: comp.assessmentCriteria || null,
         industryRelevance: comp.industryRelevance || null
       };
@@ -516,15 +521,4 @@ class CompetencyGraph {
   }
 }
 
-// Debounce function for performance
-function debounce(func, wait) {
-  let timeout;
-  return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
-    };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
-}
+// debounce is provided by js/utils.js (loaded before this file)

@@ -8,7 +8,8 @@ class LearnerService {
   }
 
   getById(id) {
-    return this.learners[id] || null;
+    if (this.learners[id]) return this.learners[id];
+    return Object.values(this.learners).find(l => l.slug === String(id)) || null;
   }
 
   create(learner) {
@@ -43,9 +44,9 @@ class LearnerService {
     if (!learner) return [];
     return learner.competencyStatus?.masteredCompetencies || learner.masteredCompetencies || [];
   }
-
-  getTargetCompetency(learnerId) {
-    const learner = this.getById(learnerId);
+  
+  getTargetCompetency(id) {
+    const learner = this.getById(id); 
     if (!learner) return null;
     return learner.targetCompetency || learner.goals?.targetCompetencies?.[0] || null;
   }

@@ -1,10 +1,3 @@
-// =============================================================================
-// FILTER PANEL - Interactive Filtering for Competency Graph
-// =============================================================================
-// Provides filtering by: EQF level, Bloom level, difficulty, mastery status,
-// learning path, domain, and search
-// =============================================================================
-
 class FilterPanel {
   constructor(containerId, graph, ontologyData) {
     this.containerId = containerId;
@@ -387,15 +380,15 @@ class FilterPanel {
         <div class="checkbox-group">
           ${domains.map(domain => `
             <label class="checkbox-label">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 class="checkbox-input"
                 data-filter="domain"
                 data-value="${domain}"
-                checked
+                ${this.filters.domains.has(domain) ? 'checked' : ''}
               />
               <span class="checkbox-custom"></span>
-              <span class="checkbox-text">${domain}</span>
+              <span class="checkbox-text">${domain.replace(/_/g, ' ')}</span>
             </label>
           `).join('')}
         </div>
@@ -616,8 +609,12 @@ class FilterPanel {
         return false;
       }
 
-      // Bloom level
-      if (!this.filters.bloomLevels.has(node.bloomLevel)) {
+      // Bloom level — stored as integer (1-6) in DB or string name in JS data
+      const BLOOM_NAMES = { 1: 'Remember', 2: 'Understand', 3: 'Apply', 4: 'Analyze', 5: 'Evaluate', 6: 'Create' };
+      const bloomName = typeof node.bloomLevel === 'number'
+        ? BLOOM_NAMES[node.bloomLevel]
+        : node.bloomLevel; // already a string like 'Remember'
+      if (bloomName && !this.filters.bloomLevels.has(bloomName)) {
         return false;
       }
 
@@ -640,8 +637,9 @@ class FilterPanel {
       }
 
       // Learning path
-      if (this.filters.showOnlyPath && this.graph.state.highlightedPath.length > 0) {
-        if (!this.graph.state.highlightedPath.includes(node.id)) {
+      const highlightedPath = this.graph.highlightedPath || [];
+      if (this.filters.showOnlyPath && highlightedPath.length > 0) {
+        if (!highlightedPath.includes(node.id)) {
           return false;
         }
       }
@@ -670,14 +668,14 @@ class FilterPanel {
       .duration(300)
       .attr('opacity', d => filteredIds.has(d.id) ? 1 : 0.15);
 
-    // Update link opacity
+    // Update link opacity (d.source / d.target may be a node object or raw id)
     this.graph.g.selectAll('.link')
       .transition()
       .duration(300)
       .attr('stroke-opacity', d => {
-        const sourceVisible = filteredIds.has(d.source.id);
-        const targetVisible = filteredIds.has(d.target.id);
-        return (sourceVisible && targetVisible) ? 0.6 : 0.05;
+        const sid = typeof d.source === 'object' ? d.source?.id : d.source;
+        const tid = typeof d.target === 'object' ? d.target?.id : d.target;
+        return (filteredIds.has(sid) && filteredIds.has(tid)) ? 0.6 : 0.05;
       });
   }
 
@@ -715,8 +713,13 @@ class FilterPanel {
   }
 
   showOnlyPath() {
-    if (this.graph.state.highlightedPath.length === 0) {
-      alert('No learning path generated. Please generate a path first.');
+    if ((this.graph.highlightedPath || []).length === 0) {
+      document.dispatchEvent(new CustomEvent('show-notification', {
+          detail: { 
+              message: 'Please generate a learning path first.',
+              type: 'warning'
+          }
+      }));
       return;
     }
 
@@ -728,8 +731,10 @@ class FilterPanel {
   }
 
   showOnlyGaps() {
-    if (!this.graph.state.selectedLearner) {
-      alert('Please select a learner first.');
+    if (!this.graph.selectedLearner) {
+      document.dispatchEvent(new CustomEvent('show-notification', {
+        detail: { message: 'Please select a learner first.', type: 'warning' }
+      }));
       return;
     }
 
@@ -844,13 +849,4 @@ class FilterPanel {
   clearAllFilters() {
     this.resetFilters();
   }
-}
-
-// Utility: debounce function
-function debounce(func, wait) {
-  let timeout;
-  return function executedFunction(...args) {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func.apply(this, args), wait);
-  };
 }

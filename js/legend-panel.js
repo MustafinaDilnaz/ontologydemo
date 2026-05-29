@@ -29,8 +29,12 @@ class LegendPanel {
   }
 
   render() {
+    if (this._rendering) return;
+    this._rendering = true;
+    this.stats = this.calculateStatistics();
     this.container.innerHTML = this.getHTML();
-    this.updateStatistics();
+    this.attachEventListeners();
+    this._rendering = false;
   }
 
   getHTML() {
@@ -479,7 +483,6 @@ class LegendPanel {
   switchTab(tabName) {
     this.activeTab = tabName;
     this.render();
-    this.attachEventListeners();
   }
 
   toggleCollapse() {
@@ -549,9 +552,11 @@ class LegendPanel {
     const bloomLevels = ['Remember', 'Understand', 'Apply', 'Analyze', 'Evaluate', 'Create'];
     const bloomDistribution = {};
     bloomLevels.forEach(level => bloomDistribution[level] = 0);
+    const bloomNumberToName = { 1: 'Remember', 2: 'Understand', 3: 'Apply', 4: 'Analyze', 5: 'Evaluate', 6: 'Create' };
     nodes.forEach(n => {
-      if (n.bloomLevel && bloomDistribution.hasOwnProperty(n.bloomLevel)) {
-        bloomDistribution[n.bloomLevel]++;
+      const bloomName = bloomNumberToName[n.bloomLevel];
+      if (bloomName && bloomDistribution.hasOwnProperty(bloomName)) {
+        bloomDistribution[bloomName]++;
       }
     });
 
@@ -570,11 +575,10 @@ class LegendPanel {
   }
 
   updateStatistics() {
-    this.stats = this.calculateStatistics();
-    
     if (this.activeTab === 'statistics' && !this.isCollapsed) {
       this.render();
-      this.attachEventListeners();
+    } else {
+      this.stats = this.calculateStatistics();
     }
   }
 

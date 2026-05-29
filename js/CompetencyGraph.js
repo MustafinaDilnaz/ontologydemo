@@ -436,17 +436,28 @@ class CompetencyGraph {
   }
 
   updateVisualization() {
-    // Efficient update without full re-render
     const { nodes, links } = this.prepareGraphData();
+
+    // Carry over simulation positions so x/y are never undefined after rebind
+    const posById = new Map((this.nodes || []).map(n => [n.id, { x: n.x, y: n.y, vx: n.vx, vy: n.vy }]));
+    nodes.forEach(n => {
+      const prev = posById.get(n.id);
+      if (prev) {
+        n.x = prev.x; n.y = prev.y;
+        n.vx = prev.vx; n.vy = prev.vy;
+      }
+    });
+
     this.nodes = nodes;
     this.links = links;
-    
-    // Update existing elements
+
     this.updateNodes(nodes);
     this.updateLinks(links);
-    
-    // Restart simulation gently
+
     if (this.simulation) {
+      this._tickCount = 0;
+      this.simulation.nodes(nodes);
+      this.simulation.force('link')?.links(links);
       this.simulation.alpha(0.3).restart();
     }
   }
@@ -471,7 +482,8 @@ class CompetencyGraph {
       
       // Show only mastered filter
       if (filters.showMasteredOnly && learner) {
-        return learner.masteredCompetencies.includes(comp.id);
+        const mastered = learner.competencyStatus?.masteredCompetencies || learner.masteredIds || [];
+        return mastered.includes(comp.id);
       }
       
       // Show only path filter
@@ -486,21 +498,27 @@ class CompetencyGraph {
     Object.values(competencies).forEach(comp => {
       if (!passesFilter(comp)) return;
       
+      const bloomVal = comp.taxonomies?.bloomLevel || comp.bloomLevel || 3;
+      const eqfVal   = comp.taxonomies?.eqfLevel   || comp.eqfLevel   || 5;
       const node = {
         id: comp.id,
         name: comp.name || comp.shortName,
-        bloomLevel: comp.taxonomies?.bloomLevel || comp.bloomLevel,
-        eqfLevel: comp.taxonomies?.eqfLevel || comp.eqfLevel,
+        bloomLevel: bloomVal,
+        eqfLevel: eqfVal,
         description: comp.description,
         type: comp.competencyType || comp.type,
         estimatedHours: comp.difficulty?.typicalMasteryTime?.novice || comp.estimatedHours,
-        isMastered: learner ? learner.competencyStatus?.masteredCompetencies.includes(comp.id) : false,
+        isMastered: learner ? (learner.competencyStatus?.masteredCompetencies || learner.masteredIds || []).includes(comp.id) : false,
         isTarget: learner ? learner.goals?.targetCompetencies?.includes(comp.id) : false,
         prerequisites: comp.prerequisites || [],
-        difficultyLevel: comp.difficulty?.absoluteDifficulty || comp.difficultyLevel,
+        // Derived from EQF level when not explicitly set
+        difficultyLevel: comp.difficulty?.absoluteDifficulty || comp.difficultyLevel
+          || (eqfVal <= 4 ? 'Beginner' : eqfVal <= 6 ? 'Intermediate' : 'Advanced'),
         complexityScore: comp.difficulty?.relativeComplexity || comp.complexityScore,
         domain: comp.domain || comp.belongsToDomain,
+        // Derived from bloom + eqf when not explicitly set (scale 0–10)
         cognitiveLoad: comp.cognitiveLoad?.estimatedCognitiveLoadUnits
+          ?? Math.round(((bloomVal / 6) + ((eqfVal - 3) / 5)) * 5),
       };
       nodes.push(node);
     });
@@ -530,7 +548,11 @@ class CompetencyGraph {
     
     const link = this.g.select('.links')
       .selectAll('line')
-      .data(links, d => `${d.source}-${d.target}`);
+      .data(links, d => {
+        const s = typeof d.source === 'object' ? d.source.id : d.source;
+        const t = typeof d.target === 'object' ? d.target.id : d.target;
+        return `${s}-${t}`;
+      });
     
     link.exit().remove();
     
@@ -628,11 +650,22 @@ class CompetencyGraph {
   }
 
   updateLinks(links) {
-    const link = this.g.select('.links')
+    // Rebind line elements to new link objects (source/target are node id numbers here,
+    // before forceLink replaces them with node object references).
+    // Key by index since source/target may still be raw ids or already-resolved objects.
+    const line = this.g.select('.links')
       .selectAll('line')
-      .data(links, d => `${d.source}-${d.target}`);
-    
-    // No visual changes needed for basic update
+      .data(links);
+
+    line.exit().remove();
+
+    line.enter()
+      .append('line')
+      .attr('class', 'link')
+      .attr('stroke', '#cbd5e1')
+      .attr('stroke-width', 2.5)
+      .attr('stroke-opacity', 0.6)
+      .attr('marker-end', 'url(#arrow-prerequisite)');
   }
 
   // ===========================================================================
@@ -660,23 +693,20 @@ class CompetencyGraph {
       .force('x', d3.forceX(this.width / 2).strength(0.05))
       .force('y', d3.forceY(this.height / 2).strength(0.05));
 
-    // Performance optimization: stop after convergence
-    let tickCount = 0;
+    this._tickCount = 0;
     this.simulation.on('tick', () => {
-      tickCount++;
-      
-      // Update positions
+      this._tickCount++;
+
       this.g.select('.links').selectAll('line')
-        .attr('x1', d => d.source.x)
-        .attr('y1', d => d.source.y)
-        .attr('x2', d => d.target.x)
-        .attr('y2', d => d.target.y);
+        .attr('x1', d => d.source?.x ?? 0)
+        .attr('y1', d => d.source?.y ?? 0)
+        .attr('x2', d => d.target?.x ?? 0)
+        .attr('y2', d => d.target?.y ?? 0);
 
       this.g.select('.nodes').selectAll('.node')
-        .attr('transform', d => `translate(${d.x},${d.y})`);
-      
-      // Stop after 300 ticks or low alpha
-      if (tickCount > 300 || this.simulation.alpha() < 0.01) {
+        .attr('transform', d => `translate(${d.x ?? 0},${d.y ?? 0})`);
+
+      if (this._tickCount > 300 || this.simulation.alpha() < 0.01) {
         this.simulation.stop();
       }
     });
@@ -860,6 +890,15 @@ class CompetencyGraph {
     return 'your target goal';
   }
 
+  clearHighlight() {
+    this.clearPathHighlight();
+    this.clearGapHighlight();
+  }
+
+  // Getters for direct property access by FilterPanel and LegendPanel
+  get selectedLearner() { return this.state.selectedLearner; }
+  get highlightedPath() { return this.state.highlightedPath; }
+
   // ===========================================================================
   // FILTERS & CONTROLS
   // ===========================================================================
@@ -995,11 +1034,3 @@ class CompetencyGraph {
   }
 }
 
-// Utility
-function debounce(func, wait) {
-  let timeout;
-  return function(...args) {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func.apply(this, args), wait);
-  };
-}
