@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel — Ontology Learning System</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+  <!-- Login screen -->
+  <div id="login-screen">
+    <div class="login-box">
+      <h1>Ontology Admin</h1>
+      <input type="email"    id="login-email"    placeholder="Email" autocomplete="username">
+      <input type="password" id="login-password" placeholder="Password" autocomplete="current-password">
+      <button onclick="login()">Sign In</button>
+      <p id="login-error"></p>
+    </div>
+  </div>
+
+  <!-- Admin app -->
+  <div id="admin-app">
+    <nav id="admin-nav">
+      <span id="admin-user-name"></span>
+      <button class="nav-btn" data-tab="dashboard"    onclick="showTab('dashboard')">Dashboard</button>
+      <button class="nav-btn" data-tab="competencies" onclick="showTab('competencies')">Competencies</button>
+      <button class="nav-btn" data-tab="resources"    onclick="showTab('resources')">Resources</button>
+      <button class="nav-btn" data-tab="learners"     onclick="showTab('learners')">Learners</button>
+      <button class="nav-btn" data-tab="goals"        onclick="showTab('goals')">Goals</button>
+      <button class="nav-btn" data-tab="audit"        onclick="showTab('audit')">Audit Log</button>
+      <button class="nav-btn logout-btn"              onclick="logout()">Logout</button>
+    </nav>
+
+    <main id="admin-content">
+
+      <!-- Dashboard -->
+      <div id="tab-dashboard" class="tab-panel">
+        <h2>Dashboard</h2>
+        <div id="dashboard-stats"></div>
+        <div id="dashboard-bottom" style="display:flex;gap:24px;flex-wrap:wrap;margin-top:24px">
+          <div id="dashboard-top-gaps" style="flex:1;min-width:280px"></div>
+          <div id="dashboard-top-resources" style="flex:2;min-width:280px;display:flex;gap:16px;flex-wrap:wrap"></div>
+        </div>
+      </div>
+
+      <!-- Competencies -->
+      <div id="tab-competencies" class="tab-panel" style="display:none">
+        <h2>Competencies</h2>
+        <div class="toolbar">
+          <input  type="text" id="comp-search" placeholder="Search name / description…" oninput="loadCompetencies()">
+          <select id="comp-filter-domain" onchange="loadCompetencies()">
+            <option value="">All domains</option>
+            <option value="data_science">Data Science</option>
+            <option value="web_dev">Web Dev</option>
+          </select>
+          <select id="comp-filter-status" onchange="loadCompetencies()">
+            <option value="active">Active</option>
+            <option value="archived">Archived</option>
+            <option value="">All</option>
+          </select>
+          <button onclick="openCompForm(null)">+ New Competency</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th><th>Domain</th><th>Bloom</th><th>EQF</th>
+              <th>Status</th><th>Prereqs</th><th>Resources</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="comp-tbody"></tbody>
+        </table>
+      </div>
+
+      <!-- Resources -->
+      <div id="tab-resources" class="tab-panel" style="display:none">
+        <h2>Learning Resources</h2>
+        <div class="toolbar">
+          <input  type="text" id="res-search" placeholder="Search name…" oninput="loadResources()">
+          <select id="res-filter-status" onchange="loadResources()">
+            <option value="approved">Approved</option>
+            <option value="draft">Draft</option>
+            <option value="archived">Archived</option>
+            <option value="">All</option>
+          </select>
+          <button onclick="openResForm(null)">+ New Resource</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th><th>Type</th><th>Difficulty</th><th>Hours</th>
+              <th>Status</th><th>Competencies</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="res-tbody"></tbody>
+        </table>
+      </div>
+
+      <!-- Learners -->
+      <div id="tab-learners" class="tab-panel" style="display:none">
+        <h2>Learners</h2>
+        <div class="toolbar">
+          <button onclick="openLearnerForm(null)">+ New Learner</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th><th>Style</th><th>Hours/wk</th><th>Score</th>
+              <th>Mastered</th><th>Goals</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="learner-tbody"></tbody>
+        </table>
+      </div>
+
+      <!-- Goals -->
+      <div id="tab-goals" class="tab-panel" style="display:none">
+        <h2>Learning Goals</h2>
+        <div class="toolbar">
+          <button onclick="openGoalForm()">+ Assign Goal</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Learner</th><th>Target Competency</th><th>EQF</th>
+              <th>Path Status</th><th>Progress</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="goal-tbody"></tbody>
+        </table>
+      </div>
+
+      <!-- Audit Log -->
+      <div id="tab-audit" class="tab-panel" style="display:none">
+        <h2>Audit Log</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Time</th><th>User</th><th>Action</th><th>Entity</th><th>ID</th>
+            </tr>
+          </thead>
+          <tbody id="audit-tbody"></tbody>
+        </table>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Modal overlay -->
+  <div id="modal">
+    <div id="modal-content"></div>
+  </div>
+
+  <!-- Toast notifications -->
+  <div id="toasts"></div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

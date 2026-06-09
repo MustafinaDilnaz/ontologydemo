@@ -668,14 +668,14 @@ class FilterPanel {
       .duration(300)
       .attr('opacity', d => filteredIds.has(d.id) ? 1 : 0.15);
 
-    // Update link opacity (d.source / d.target may be a node object or raw id)
+    // Update link visibility — use element opacity so the marker-end arrow is also hidden
     this.graph.g.selectAll('.link')
       .transition()
       .duration(300)
-      .attr('stroke-opacity', d => {
+      .attr('opacity', d => {
         const sid = typeof d.source === 'object' ? d.source?.id : d.source;
         const tid = typeof d.target === 'object' ? d.target?.id : d.target;
-        return (filteredIds.has(sid) && filteredIds.has(tid)) ? 0.6 : 0.05;
+        return (filteredIds.has(sid) && filteredIds.has(tid)) ? 1 : 0;
       });
   }
 

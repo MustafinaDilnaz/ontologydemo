@@ -20,7 +20,11 @@ CREATE TABLE IF NOT EXISTS competencies (
   description TEXT,
   bloom_level INTEGER NOT NULL CHECK (bloom_level BETWEEN 1 AND 6),
   eqf_level   INTEGER NOT NULL CHECK (eqf_level  BETWEEN 1 AND 8),
-  domain      TEXT DEFAULT 'data_science'
+  domain      TEXT DEFAULT 'data_science',
+  status      TEXT DEFAULT 'active' CHECK (status IN ('active','archived')),
+  created_by  INTEGER,
+  created_at  TEXT,
+  updated_at  TEXT
 );
 
 CREATE TABLE IF NOT EXISTS learner_mastery (
@@ -36,6 +40,8 @@ CREATE TABLE IF NOT EXISTS learner_mastery (
 CREATE TABLE IF NOT EXISTS prerequisites (
   competency_id          INTEGER NOT NULL REFERENCES competencies(id),
   requires_competency_id INTEGER NOT NULL REFERENCES competencies(id),
+  created_by             INTEGER,
+  created_at             TEXT,
   PRIMARY KEY (competency_id, requires_competency_id),
   CHECK (competency_id != requires_competency_id)
 );
@@ -52,7 +58,14 @@ CREATE TABLE IF NOT EXISTS resources (
   difficulty      INTEGER NOT NULL CHECK (difficulty BETWEEN 1 AND 5),
   duration_hours  REAL    NOT NULL,
   url             TEXT,
-  suitable_styles TEXT    NOT NULL
+  suitable_styles TEXT    NOT NULL,
+  description     TEXT,
+  language        TEXT DEFAULT 'en',
+  status          TEXT DEFAULT 'approved' CHECK (status IN ('draft','approved','archived')),
+  rating          REAL DEFAULT 0,
+  created_by      INTEGER,
+  created_at      TEXT,
+  updated_at      TEXT
 );
 
 CREATE TABLE IF NOT EXISTS resource_competencies (
@@ -117,3 +130,39 @@ CREATE INDEX IF NOT EXISTS idx_learning_paths_goal         ON learning_paths(goa
 CREATE INDEX IF NOT EXISTS idx_path_steps_path             ON path_steps(path_id);
 CREATE INDEX IF NOT EXISTS idx_path_steps_competency       ON path_steps(competency_id);
 CREATE INDEX IF NOT EXISTS idx_explanations_path_step      ON explanations(path_step_id);
+
+-- ============================================================
+-- LAYER 5: ADMIN
+-- ============================================================
+
+-- 1. Users table (authentication)
+CREATE TABLE IF NOT EXISTS users (
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  name          TEXT    NOT NULL,
+  email         TEXT    UNIQUE NOT NULL,
+  password_hash TEXT    NOT NULL,
+  role          TEXT    NOT NULL DEFAULT 'learner'
+                CHECK (role IN ('admin','instructor','learner')),
+  is_active     INTEGER NOT NULL DEFAULT 1,
+  created_at    TEXT    DEFAULT CURRENT_TIMESTAMP,
+  updated_at    TEXT    DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2. Audit log
+CREATE TABLE IF NOT EXISTS audit_logs (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id     INTEGER REFERENCES users(id),
+  action      TEXT NOT NULL,
+  entity_type TEXT NOT NULL,
+  entity_id   INTEGER,
+  old_value   TEXT,
+  new_value   TEXT,
+  created_at  TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 3. Indexes for admin tables
+-- (ALTER TABLE migrations for existing tables are applied once via scripts/migrate-admin.js)
+CREATE INDEX IF NOT EXISTS idx_users_email      ON users(email);
+CREATE INDEX IF NOT EXISTS idx_users_role       ON users(role);
+CREATE INDEX IF NOT EXISTS idx_audit_user       ON audit_logs(user_id);
+CREATE INDEX IF NOT EXISTS idx_audit_entity     ON audit_logs(entity_type, entity_id);

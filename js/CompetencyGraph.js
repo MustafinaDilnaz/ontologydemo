@@ -307,6 +307,7 @@ class CompetencyGraph {
       .attr('stroke', '#cbd5e1')
       .attr('stroke-width', 2.5)
       .attr('stroke-opacity', 0.6)
+      .attr('opacity', 1)
       .attr('marker-end', 'url(#arrow-prerequisite)');
     
     // Reset text
@@ -374,11 +375,11 @@ class CompetencyGraph {
         return 2.5;
       })
       .attr('opacity', d => {
-        const isGap = critical.has(d.id) || high.has(d.id) || 
+        const isGap = critical.has(d.id) || high.has(d.id) ||
                       medium.has(d.id) || low.has(d.id);
         return isGap || d.isTarget || d.isMastered ? 1 : 0.3;
       });
-    
+
     // Add priority badges
     this.g.selectAll('.node')
       .selectAll('.priority-badge')
@@ -411,7 +412,7 @@ class CompetencyGraph {
   clearGapHighlight() {
     // Remove priority badges
     this.g.selectAll('.priority-badge').remove();
-    
+
     // Reset node appearance
     this.g.selectAll('.node circle')
       .transition()
@@ -562,6 +563,7 @@ class CompetencyGraph {
       .attr('stroke', '#cbd5e1')
       .attr('stroke-width', 2.5)
       .attr('stroke-opacity', 0.6)
+      .attr('opacity', 1)
       .attr('marker-end', 'url(#arrow-prerequisite)');
   }
 
@@ -665,6 +667,7 @@ class CompetencyGraph {
       .attr('stroke', '#cbd5e1')
       .attr('stroke-width', 2.5)
       .attr('stroke-opacity', 0.6)
+      .attr('opacity', 1)
       .attr('marker-end', 'url(#arrow-prerequisite)');
   }
 

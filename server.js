@@ -1,12 +1,35 @@
-const express = require('express');
-const path    = require('path');
-const { getDb } = require('./db/connection');
+const express   = require('express');
+const path      = require('path');
+const bcrypt    = require('bcryptjs');
+const { rateLimit, ipKeyGenerator } = require('express-rate-limit');
+const { getDb }                          = require('./db/connection');
+const { signToken, requireAuth, requireRole } = require('./middleware/auth');
+const adminCompetencies = require('./routes/admin/competencies');
+const adminResources    = require('./routes/admin/resources');
+const adminLearners     = require('./routes/admin/learners');
+const adminGoals        = require('./routes/admin/goals');
 
 const app  = express();
 const PORT = 3000;
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
+app.use('/admin', express.static(path.join(__dirname, 'admin')));
+
+// Максимум 10 попыток входа с одного IP за 15 минут.
+// keyGenerator явный: req.ip в Express 5 + static middleware может быть undefined.
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  legacyHeaders: false,
+  keyGenerator: (req) => ipKeyGenerator(req.ip || req.socket?.remoteAddress || ''),
+  message: { error: 'Слишком много попыток входа. Повторите через 15 минут.' },
+});
+
+app.use('/api/admin/competencies', adminCompetencies);
+app.use('/api/admin/resources',    adminResources);
+app.use('/api/admin/learners',     adminLearners);
+app.use('/api/admin/goals',        adminGoals);
 
 // ── helpers ────────────────────────────────────────────────
 function ok(res, data)         { res.json(data); }
@@ -133,7 +156,7 @@ app.get('/api/resources', (req, res) => {
       difficulty:   r.difficulty,
       durationHours: r.durationHours,
       url:          r.url || null,
-      suitableStyles: r.suitableStyles ? JSON.parse(r.suitableStyles) : [],
+      suitableStyles: (() => { try { return JSON.parse(r.suitableStyles || '[]'); } catch { return []; } })(),
       competencyIds: r.competencyIds
         ? r.competencyIds.split(',').map(Number)
         : [],
@@ -347,6 +370,37 @@ app.post('/api/paths', (req, res) => {
 
     ok(res, { pathId, stepsCount: validSteps.length, status: 'active' });
   } catch (e) { fail(res, 500, e.message); }
+});
+
+// ============================================================
+// POST /api/auth/login
+// ============================================================
+app.post('/api/auth/login', authLimiter, (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) return fail(res, 400, 'Email and password required');
+
+  const user = getDb()
+    .prepare('SELECT * FROM users WHERE email = ? AND is_active = 1')
+    .get(email);
+
+  if (!user || !bcrypt.compareSync(password, user.password_hash)) {
+    return fail(res, 401, 'Invalid credentials');
+  }
+
+  const token = signToken({ id: user.id, email: user.email, role: user.role, name: user.name });
+  ok(res, { token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
+});
+
+// ============================================================
+// GET /api/auth/me
+// ============================================================
+app.get('/api/auth/me', requireAuth, (req, res) => {
+  ok(res, { user: req.user });
+});
+
+// Admin SPA catch-all — must come after all API routes
+app.get(['/admin', '/admin/*path'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'admin', 'index.html'));
 });
 
 // ============================================================

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,100 +36,100 @@
     <div id="overview-tab" class="tab-content active">
       <div class="card">
         <h2>System Overview</h2>
-        <p style="margin-bottom: 20px; line-height: 1.8; color: var(--text-secondary);">
-          This demonstration implements the ontology-based framework described in the research article. 
+        <p class="tab-intro--relaxed">
+          This demonstration implements the ontology-based framework described in the research article.
           The system integrates four semantic layers to enable automated, explainable personalized learning:
         </p>
 
         <!-- Four Layers -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 30px 0;">
-          <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; border-left: 4px solid #3b82f6;">
-            <h3 style="color: #3b82f6; margin: 0 0 10px 0;">1️⃣ Learner Layer</h3>
-            <p style="color: var(--text-secondary); font-size: 0.95rem;">
-              Models individual characteristics: learning styles (VARK), mastered competencies, 
+        <div class="layers-grid">
+          <div class="layer-card layer-card--blue">
+            <h3>1️⃣ Learner Layer</h3>
+            <p>
+              Models individual characteristics: learning styles (VARK), mastered competencies,
               goals, and preferences.
             </p>
           </div>
-          
-          <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; border-left: 4px solid #8b5cf6;">
-            <h3 style="color: #8b5cf6; margin: 0 0 10px 0;">2️⃣ Competency Layer</h3>
-            <p style="color: var(--text-secondary); font-size: 0.95rem;">
-              Encodes learning outcomes with Bloom's cognitive levels, EQF qualification levels, 
+
+          <div class="layer-card layer-card--purple">
+            <h3>2️⃣ Competency Layer</h3>
+            <p>
+              Encodes learning outcomes with Bloom's cognitive levels, EQF qualification levels,
               and transitive prerequisite relationships.
             </p>
           </div>
-          
-          <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; border-left: 4px solid #10b981;">
-            <h3 style="color: #10b981; margin: 0 0 10px 0;">3️⃣ Content Layer</h3>
-            <p style="color: var(--text-secondary); font-size: 0.95rem;">
-              Describes educational resources (courses, modules) using IEEE LOM standards, 
+
+          <div class="layer-card layer-card--green">
+            <h3>3️⃣ Content Layer</h3>
+            <p>
+              Describes educational resources (courses, modules) using IEEE LOM standards,
               mapped to competencies.
             </p>
           </div>
-          
-          <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; border-left: 4px solid #f59e0b;">
-            <h3 style="color: #f59e0b; margin: 0 0 10px 0;">4️⃣ Process Layer</h3>
-            <p style="color: var(--text-secondary); font-size: 0.95rem;">
-              Generates personalized learning paths through hybrid reasoning: OWL inference, 
+
+          <div class="layer-card layer-card--amber">
+            <h3>4️⃣ Process Layer</h3>
+            <p>
+              Generates personalized learning paths through hybrid reasoning: OWL inference,
               SWRL rules, SPARQL queries.
             </p>
           </div>
         </div>
 
         <h3>Ontology Statistics</h3>
-        <div class="summary-stats" style="margin-top: 20px;">
+        <div class="summary-stats mt-20">
           <div class="stat-item">
-            <span class="stat-value" id="total-competencies" style="color: var(--primary-color);">8</span>
-            <span class="stat-label" style="color: var(--text-secondary);">Competencies</span>
+            <span class="stat-value stat-value--primary" id="total-competencies">8</span>
+            <span class="stat-label">Competencies</span>
           </div>
           <div class="stat-item">
-            <span class="stat-value" id="total-resources" style="color: var(--secondary-color);">8</span>
-            <span class="stat-label" style="color: var(--text-secondary);">Learning Resources</span>
+            <span class="stat-value stat-value--secondary" id="total-resources">8</span>
+            <span class="stat-label">Learning Resources</span>
           </div>
           <div class="stat-item">
-            <span class="stat-value" id="total-learners" style="color: var(--success-color);">4</span>
-            <span class="stat-label" style="color: var(--text-secondary);">Simulated Learners</span>
+            <span class="stat-value stat-value--success" id="total-learners">4</span>
+            <span class="stat-label">Simulated Learners</span>
           </div>
           <div class="stat-item">
-            <span class="stat-value" id="avg-prerequisites" style="color: var(--warning-color);">1.5</span>
-            <span class="stat-label" style="color: var(--text-secondary);">Avg Prerequisites</span>
+            <span class="stat-value stat-value--warning" id="avg-prerequisites">1.5</span>
+            <span class="stat-label">Avg Prerequisites</span>
           </div>
           <div class="stat-item">
-            <span class="stat-value" id="active-paths" style="color: var(--primary-color);">0</span>
-            <span class="stat-label" style="color: var(--text-secondary);">Active Paths</span>
+            <span class="stat-value stat-value--primary" id="active-paths">0</span>
+            <span class="stat-label">Active Paths</span>
           </div>
           <div class="stat-item">
-            <span class="stat-value" id="total-masteries" style="color: var(--success-color);">0</span>
-            <span class="stat-label" style="color: var(--text-secondary);">Masteries Recorded</span>
+            <span class="stat-value stat-value--success" id="total-masteries">0</span>
+            <span class="stat-label">Masteries Recorded</span>
           </div>
         </div>
 
         <!-- Cohort analytics (populated by syncFromDatabase) -->
-        <div id="cohort-analytics" style="margin-top:28px; display:none;">
-          <h3 style="margin:0 0 16px 0; color:var(--text-primary); font-size:1.1rem;">📊 Cohort Analytics</h3>
-          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:20px;">
+        <div id="cohort-analytics" class="cohort-analytics" style="display:none;">
+          <h3 class="cohort-title">📊 Cohort Analytics</h3>
+          <div class="cohort-grid">
 
-            <div style="background:var(--bg-light); border-radius:10px; padding:18px; border:1px solid var(--border-color);">
-              <h4 style="margin:0 0 12px 0; color:var(--danger-color); font-size:0.95rem;">🚧 Top Missing Competencies</h4>
-              <ol id="gap-frequency-list" style="margin:0; padding-left:18px; color:var(--text-secondary); font-size:0.88rem; line-height:2;"></ol>
+            <div class="analytics-card">
+              <h4 class="analytics-card__title analytics-card__title--danger">🚧 Top Missing Competencies</h4>
+              <ol id="gap-frequency-list" class="analytics-list"></ol>
             </div>
 
-            <div style="background:var(--bg-light); border-radius:10px; padding:18px; border:1px solid var(--border-color);">
-              <h4 style="margin:0 0 12px 0; color:var(--secondary-color); font-size:0.95rem;">📚 Top Used Resources</h4>
-              <ol id="top-resources-list" style="margin:0; padding-left:18px; color:var(--text-secondary); font-size:0.88rem; line-height:2;"></ol>
+            <div class="analytics-card">
+              <h4 class="analytics-card__title analytics-card__title--secondary">📚 Top Used Resources</h4>
+              <ol id="top-resources-list" class="analytics-list"></ol>
             </div>
 
-            <div style="background:var(--bg-light); border-radius:10px; padding:18px; border:1px solid var(--border-color);">
-              <h4 style="margin:0 0 12px 0; color:var(--success-color); font-size:0.95rem;">🎓 Readiness Distribution</h4>
-              <div id="readiness-distribution" style="font-size:0.88rem;"></div>
+            <div class="analytics-card">
+              <h4 class="analytics-card__title analytics-card__title--success">🎓 Readiness Distribution</h4>
+              <div id="readiness-distribution" class="analytics-small"></div>
             </div>
 
           </div>
         </div>
 
-        <div style="margin-top: 30px; padding: 20px; background: #eff6ff; border-radius: 8px; border-left: 4px solid var(--primary-color);">
-          <h3 style="margin: 0 0 10px 0; color: var(--primary-color);">🚀 How to Use This Demo</h3>
-          <ol style="color: var(--text-secondary); line-height: 2;">
+        <div class="info-box--blue">
+          <h3 class="info-box__title">🚀 How to Use This Demo</h3>
+          <ol class="info-box__list">
             <li><strong>Explore Learners:</strong> Click the "Learners" tab to see different learner profiles with varying backgrounds and goals.</li>
             <li><strong>Visualize Competencies:</strong> View the "Competency Graph" to see prerequisite relationships with interactive filtering and legend.</li>
             <li><strong>Generate Learning Paths:</strong> Use the "Path Planner" to see personalized, step-by-step learning trajectories with explanations.</li>
@@ -143,19 +143,16 @@
     <div id="learners-tab" class="tab-content">
       <div class="card">
         <h2>Learner Profiles</h2>
-        <p style="margin-bottom: 16px; color: var(--text-secondary);">
+        <p class="tab-intro--spaced">
           Select a learner to see their personalized learning path based on their background,
           goals, and learning style.
         </p>
-        <div style="position:relative; margin-bottom:20px; max-width:400px;">
+        <div class="search-wrapper">
           <input id="learner-search" type="text" placeholder="🔍 Search learners by name…"
-            style="width:100%; padding:9px 14px; border-radius:8px; border:1px solid var(--border-color);
-                   font-size:0.95rem; outline:none; box-shadow:var(--shadow);"
-            autocomplete="off">
-          <span id="learner-search-count" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);
-                font-size:0.8rem;color:var(--text-secondary);pointer-events:none;"></span>
+            class="search-input" autocomplete="off">
+          <span id="learner-search-count" class="search-count"></span>
         </div>
-        <div id="learner-profile-details" style="margin-top: 20px;">
+        <div id="learner-profile-details" class="mt-20">
           <!-- Enhanced profile will be rendered here by app.js -->
         </div>
 
@@ -171,8 +168,8 @@
     <div id="graph-tab" class="tab-content">
       <div class="card">
         <h2>Interactive Competency Prerequisite Graph</h2>
-        <p style="margin-bottom: 20px; color: var(--text-secondary);">
-          This interactive graph visualizes the competency ontology with prerequisite relationships. 
+        <p class="tab-intro">
+          This interactive graph visualizes the competency ontology with prerequisite relationships.
           Use the filter panel to narrow down competencies, and the legend panel for interactive actions.
         </p>
 
@@ -192,9 +189,9 @@
           </div>
         </div>
 
-        <div style="margin-top: 20px; padding: 20px; background: #fef3c7; border-radius: 8px; border-left: 4px solid #f59e0b;">
-          <h4 style="margin: 0 0 10px 0; color: #92400e;">💡 Interactive Features:</h4>
-          <ul style="color: #92400e; line-height: 1.8; margin: 10px 0 0 20px;">
+        <div class="info-box--amber">
+          <h4 class="info-box__title">💡 Interactive Features:</h4>
+          <ul class="info-box__list">
             <li><strong>Click nodes</strong> to see detailed explanations and recommendations</li>
             <li><strong>Use filters</strong> to show/hide competencies by Bloom/EQF levels</li>
             <li><strong>Search</strong> for specific competencies by name (Ctrl+K)</li>
@@ -207,8 +204,8 @@
 
         <!-- Legend for users without JavaScript panels -->
         <noscript>
-          <div style="margin-top: 20px; padding: 20px; background: #fee2e2; border-radius: 8px; color: #991b1b;">
-            <strong>⚠️ JavaScript Required:</strong> This interactive demo requires JavaScript to be enabled 
+          <div class="info-box--error">
+            <strong>⚠️ JavaScript Required:</strong> This interactive demo requires JavaScript to be enabled
             for full functionality including filtering, legends, and graph interactions.
           </div>
         </noscript>
@@ -218,47 +215,47 @@
     <div id="planner-tab" class="tab-content">
       <div class="card">
         <h2>Personalized Learning Path Generator</h2>
-        <p style="margin-bottom: 20px; color: var(--text-secondary);">
-          This demonstrates automated path generation using SPARQL queries and SWRL rules. 
-          The system identifies competency gaps, generates an optimal learning sequence, 
+        <p class="tab-intro">
+          This demonstrates automated path generation using SPARQL queries and SWRL rules.
+          The system identifies competency gaps, generates an optimal learning sequence,
           and provides natural language explanations.
         </p>
 
-        <div style="padding: 20px; background: var(--bg-light); border-radius: 8px; margin-bottom: 20px;">
-          <h3 style="margin: 0 0 10px 0;">Selected Learner</h3>
-          <div style="font-size: 1.2rem;">
+        <div class="learner-summary-box">
+          <h3>Selected Learner</h3>
+          <div class="learner-name">
             <strong id="selected-learner-name">Select a learner to begin</strong>
           </div>
-          <div style="color: var(--text-secondary); margin-top: 5px;">
+          <div class="learner-goal">
             Goal: <strong id="selected-learner-goal">-</strong>
           </div>
-          
+
           <!-- Enhanced profile details container -->
-          <div id="learner-profile-details-planner" style="margin-top: 15px;">
+          <div id="learner-profile-details-planner" class="learner-profile-details">
             <!-- Will be populated by app.js -->
           </div>
         </div>
 
         <h3>🔍 Competency Gap Analysis</h3>
-        <p style="color: var(--text-secondary); margin-bottom: 15px;">
+        <p class="tab-intro">
           Using SPARQL Query 2.1, the system identifies missing prerequisites categorized by priority.
         </p>
         <div id="gap-analysis">
           <div class="empty-state">
-            <div class="empty-state-icon">👈</div>
+            <div class="empty-state-icon">👆</div>
             <h3>Select a Learner</h3>
             <p>Choose a learner from the "Learners" tab to see their competency gap analysis.</p>
           </div>
         </div>
 
-        <h3 style="margin-top: 40px;">🛤️ Generated Learning Path</h3>
-        <p style="color: var(--text-secondary); margin-bottom: 15px;">
-          The system uses topological sorting over the competency graph to sequence learning activities 
+        <h3 class="tab-section-heading">🛤️ Generated Learning Path</h3>
+        <p class="tab-intro">
+          The system uses topological sorting over the competency graph to sequence learning activities
           while respecting prerequisites. Resources are matched to learning styles using SWRL rules.
         </p>
         <div id="learning-path">
           <div class="empty-state">
-            <div class="empty-state-icon">👈</div>
+            <div class="empty-state-icon">👆</div>
             <h3>Select a Learner</h3>
             <p>Choose a learner from the "Learners" tab to generate their personalized learning path.</p>
           </div>
@@ -269,37 +266,37 @@
     <div id="reasoning-tab" class="tab-content">
       <div class="card">
         <h2>🧠 Reasoning Process Explanation</h2>
-        <p style="margin-bottom: 20px; color: var(--text-secondary); line-height: 1.8;">
+        <p class="tab-intro--relaxed">
           Interactive prerequisite tree for the selected learner. Root = target goal. Leaves = knowledge gaps.
           Hover over any node to see the reasoning explanation.
         </p>
 
         <!-- Interactive D3 reasoning tree -->
-        <div id="reasoning-tree-wrap" style="border:1px solid var(--border-color); border-radius:10px; background:var(--bg-light); padding:16px; margin-bottom:28px;">
-          <div id="reasoning-tree-controls" style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:12px;">
-            <label style="font-size:0.85rem; color:var(--text-secondary); font-weight:600;">Learner:</label>
-            <select id="rt-learner-select" style="padding:6px 10px; border-radius:6px; border:1px solid var(--border-color); font-size:0.9rem;"></select>
-            <label style="font-size:0.85rem; color:var(--text-secondary); font-weight:600;">Goal:</label>
-            <select id="rt-goal-select" style="padding:6px 10px; border-radius:6px; border:1px solid var(--border-color); font-size:0.9rem;"></select>
-            <div style="margin-left:auto; display:flex; gap:10px; flex-wrap:wrap; font-size:0.8rem; color:var(--text-secondary);">
-              <span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#ef4444;vertical-align:middle;margin-right:4px;"></span>Critical</span>
-              <span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#f59e0b;vertical-align:middle;margin-right:4px;"></span>High</span>
-              <span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#3b82f6;vertical-align:middle;margin-right:4px;"></span>Medium</span>
-              <span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#10b981;vertical-align:middle;margin-right:4px;"></span>Mastered</span>
-              <span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#7c3aed;vertical-align:middle;margin-right:4px;"></span>Goal</span>
+        <div id="reasoning-tree-wrap" class="reasoning-tree-wrap">
+          <div id="reasoning-tree-controls" class="reasoning-controls">
+            <label class="control-label" for="rt-learner-select">Learner:</label>
+            <select id="rt-learner-select" class="control-select"></select>
+            <label class="control-label" for="rt-goal-select">Goal:</label>
+            <select id="rt-goal-select" class="control-select"></select>
+            <div class="tree-legend">
+              <span><span class="legend-dot legend-dot--critical"></span>Critical</span>
+              <span><span class="legend-dot legend-dot--high"></span>High</span>
+              <span><span class="legend-dot legend-dot--medium"></span>Medium</span>
+              <span><span class="legend-dot legend-dot--mastered"></span>Mastered</span>
+              <span><span class="legend-dot legend-dot--goal"></span>Goal</span>
             </div>
           </div>
-          <div id="reasoning-tree-container" style="width:100%; height:440px; overflow:hidden; position:relative;">
-            <div id="reasoning-tree-placeholder" style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-secondary);">
+          <div id="reasoning-tree-container" class="reasoning-tree-container">
+            <div id="reasoning-tree-placeholder" class="reasoning-placeholder">
               Select a learner above to visualise the reasoning chain.
             </div>
           </div>
           <!-- Hover tooltip -->
-          <div id="rt-tooltip" style="position:fixed;display:none;background:#1e293b;color:#f1f5f9;padding:10px 14px;border-radius:8px;font-size:0.82rem;max-width:280px;pointer-events:none;z-index:9999;line-height:1.5;box-shadow:0 4px 20px rgba(0,0,0,0.3);"></div>
+          <div id="rt-tooltip"></div>
         </div>
 
         <div class="reasoning-chain">
-          <h3 style="color: var(--primary-color); margin-bottom: 20px;">Step-by-Step Reasoning Pipeline</h3>
+          <h3>Step-by-Step Reasoning Pipeline</h3>
 
           <div class="reasoning-step">
             <div class="step-icon">1</div>
@@ -406,9 +403,9 @@
           </div>
         </div>
 
-        <div style="margin-top: 30px; padding: 25px; background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%); border-radius: 12px; border: 2px solid var(--primary-color);">
-          <h3 style="color: var(--primary-color); margin: 0 0 15px 0;">🎯 Key Advantages of This Approach</h3>
-          <ul style="color: var(--text-secondary); line-height: 2; margin-left: 20px;">
+        <div class="highlight-box">
+          <h3>🎯 Key Advantages of This Approach</h3>
+          <ul>
             <li><strong>Explainability:</strong> Every recommendation includes a traceable justification based on prerequisite logic.</li>
             <li><strong>Consistency:</strong> OWL reasoning guarantees logically valid prerequisite structures (no cycles, complete coverage).</li>
             <li><strong>Adaptability:</strong> SWRL rules enable context-sensitive personalization (learning styles, difficulty matching).</li>
@@ -419,14 +416,14 @@
         </div>
 
         <!-- Additional Implementation Details -->
-        <div style="margin-top: 30px; padding: 20px; background: #f0f9ff; border-radius: 8px; border-left: 4px solid #0284c7;">
-          <h4 style="color: #0284c7; margin: 0 0 10px 0;">🔧 Implementation Highlights</h4>
-          <div style="color: var(--text-secondary); line-height: 1.8;">
+        <div class="info-box--sky">
+          <h4 class="info-box__title">🔧 Implementation Highlights</h4>
+          <div class="info-box__body">
             <p><strong>Frontend:</strong> D3.js force-directed graph with custom physics, responsive panels, real-time filtering</p>
             <p><strong>Reasoning Engine:</strong> JavaScript implementation of OWL-DL subset with transitive closure computation</p>
             <p><strong>Data Format:</strong> JSON-LD compatible structure that can be exported to RDF/OWL</p>
             <p><strong>Use Cases Supported:</strong></p>
-            <ul style="margin-left: 20px;">
+            <ul>
               <li><strong>UC-1:</strong> Learning Path Generation with topological sorting</li>
               <li><strong>UC-2:</strong> Gap Diagnosis with priority categorization</li>
               <li><strong>UC-3:</strong> Explainable Recommendations with natural language traces</li>
@@ -437,14 +434,14 @@
     </div>
 
     <!-- Footer -->
-    <div style="text-align: center; padding: 30px; color: white; margin-top: 30px;">
-      <p style="margin: 0; opacity: 0.9;">
+    <div class="site-footer">
+      <p>
         <strong>Research Article Implementation:</strong> Ontology-Based Framework for Personalized Educational Process Planning
       </p>
-      <p style="margin: 10px 0 0 0; opacity: 0.7; font-size: 0.9rem;">
+      <p>
         Demo created to showcase semantic reasoning, explainable AI, and competency-based personalization in education
       </p>
-      <p style="margin: 10px 0 0 0; opacity: 0.6; font-size: 0.85rem;">
+      <p>
         Interactive features: Graph filtering • Learning path generation • Gap analysis • Explainable recommendations
       </p>
     </div>
