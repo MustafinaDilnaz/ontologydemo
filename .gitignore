@@ -1,0 +1,16 @@
+node_modules/
+
+# SQLite temporary files
+data/ontology.db-shm
+data/ontology.db-wal
+
+# Environment
+.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
